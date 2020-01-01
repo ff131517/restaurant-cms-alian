@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { SFSchema } from '@delon/form';
-
+import { Food, FoodService } from '../food.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 @Component({
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
 })
 export class DetailComponent implements OnInit {
-  constructor() {}
+  constructor(private foodService: FoodService, private message: NzMessageService) {}
   schema: SFSchema = {
     required: ['name', 'desc', 'imgUrl', 'price', 'type'],
 
@@ -39,8 +40,13 @@ export class DetailComponent implements OnInit {
     },
   };
 
-  submit(value: any) {
-    console.log(value);
+  submit(value: Food) {
+    this.foodService.insertFood(value).subscribe((res: any) => {
+      console.log(res);
+      if (res.code === 0) {
+        this.message.success(res.message);
+      }
+    });
   }
   ngOnInit() {}
 }
