@@ -1,0 +1,13 @@
+<page-header [action]="phActionTpl"
+             autoBreadcrumb="false"
+             title="详情">
+  <ng-template #phActionTpl>
+    <!-- <button nz-button [routerLink]="['/food/detail']" nzType="primary">新建</button> -->
+  </ng-template>
+</page-header>
+<nz-card class="detail-card">
+  <sf [schema]="schema"
+      class="detail-from"
+      (formSubmit)="submit($event)"
+      class="detail-form"></sf>
+</nz-card>
