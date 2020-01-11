@@ -7,7 +7,6 @@ import { DetailComponent } from './detail/detail.component';
 
 const COMPONENTS = [FoodListComponent];
 const COMPONENTS_NOROUNT = [FoodEditComponent];
-
 @NgModule({
   imports: [SharedModule, FoodRoutingModule],
   declarations: [...COMPONENTS, ...COMPONENTS_NOROUNT, DetailComponent],

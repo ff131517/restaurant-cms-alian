@@ -2,15 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { SFSchema } from '@delon/form';
 import { Food, FoodService } from '../food.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss'],
 })
 export class DetailComponent implements OnInit {
-  constructor(private foodService: FoodService, private message: NzMessageService) {}
+  constructor(private foodService: FoodService, private message: NzMessageService, private router: ActivatedRoute) {}
   schema: SFSchema = {
     required: ['name', 'desc', 'imgUrl', 'price', 'type'],
-
     properties: {
       name: {
         type: 'string',
@@ -39,7 +39,7 @@ export class DetailComponent implements OnInit {
       },
     },
   };
-
+  food = new Food();
   submit(value: Food) {
     this.foodService.insertFood(value).subscribe((res: any) => {
       console.log(res);
@@ -48,5 +48,23 @@ export class DetailComponent implements OnInit {
       }
     });
   }
-  ngOnInit() {}
+  getDetail() {
+    this.foodService.getFoodDetail(this.food.id).subscribe(
+      rsp => {
+        console.log(rsp);
+        this.food = rsp.data;
+      },
+      err => {
+        console.log(err);
+      },
+    );
+  }
+  ngOnInit() {
+    this.router.params.subscribe(param => {
+      this.food.id = param.id;
+      if (this.food.id) {
+        this.getDetail();
+      }
+    });
+  }
 }

@@ -14,7 +14,6 @@ import { NzMessageService, NzNotificationService } from 'ng-zorro-antd';
 import { _HttpClient } from '@delon/theme';
 import { environment } from '@env/environment';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-
 const CODEMESSAGE = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
@@ -32,7 +31,6 @@ const CODEMESSAGE = {
   503: '服务不可用，服务器暂时过载或维护。',
   504: '网关超时。',
 };
-
 /**
  * 默认HTTP拦截器，其注册细节见 `app.module.ts`
  */
@@ -117,8 +115,6 @@ export class DefaultInterceptor implements HttpInterceptor {
       url = environment.SERVER_URL + url;
     }
     const newReq = req.clone({ url });
-    console.log(newReq);
-
     return next.handle(newReq).pipe(
       mergeMap((event: any) => {
         // 允许统一对请求错误处理

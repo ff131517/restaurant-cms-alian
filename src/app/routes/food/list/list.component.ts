@@ -3,13 +3,25 @@ import { _HttpClient, ModalHelper } from '@delon/theme';
 import { STColumn, STComponent } from '@delon/abc';
 import { SFSchema } from '@delon/form';
 import { FoodEditComponent } from './view/view.component';
-
+import { Food, FoodService } from '../food.service';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+interface Response<T> {
+  data: T;
+}
 @Component({
   selector: 'app-sys-log',
   templateUrl: './list.component.html',
 })
 export class FoodListComponent implements OnInit {
-  url = `/user`;
+  constructor(
+    private modal: ModalHelper,
+    private router: Router,
+    private foodService: FoodService,
+    private http: HttpClient,
+  ) {}
+
+  foodList: Food[] = [];
   searchSchema: SFSchema = {
     properties: {
       no: {
@@ -20,26 +32,35 @@ export class FoodListComponent implements OnInit {
   };
   @ViewChild('st', { static: false }) st: STComponent;
   columns: STColumn[] = [
-    { title: '编号', index: 'no' },
-    { title: '调用次数', type: 'number', index: 'callNo' },
-    { title: '头像', type: 'img', width: '50px', index: 'avatar' },
+    { title: 'id', index: 'id' },
+    { title: '菜品名称', index: 'name' },
+    { title: '价格', type: 'number', index: 'price' },
+    { title: '图片', type: 'img', index: 'imgUrl' },
     { title: '时间', type: 'date', index: 'updatedAt' },
     {
       title: '',
       buttons: [
-        { text: '查看', click: (item: any) => `/form/${item.id}` },
-        // { text: '编辑', type: 'static', component: FormEditComponent, click: 'reload' },
+        {
+          text: '编辑',
+          click: (item: any) => {
+            this.router.navigateByUrl(`/food/detail/${item.id}`);
+          },
+        },
+        // { text: '查看', type: 'static', component: FormEditComponent, click: 'reload' },
       ],
     },
   ];
 
-  constructor(private http: _HttpClient, private modal: ModalHelper) {}
+  ngOnInit() {
+    this.getList();
+  }
 
-  ngOnInit() {}
-
+  getList() {
+    this.foodService.getFoodList().subscribe(rsp => {
+      this.foodList = rsp.data;
+    });
+  }
   add() {
-    this.modal
-      .createStatic(FoodEditComponent, { i: { id: 0 } })
-      .subscribe(() => this.st.reload());
+    this.modal.createStatic(FoodEditComponent, { i: { id: 0 } }).subscribe(() => this.st.reload());
   }
 }
